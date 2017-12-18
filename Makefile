@@ -15,3 +15,7 @@ mykernel.bin: linker.ld $(objects)
 
 install: mykernel.bin
 	sudo cp $< /boot/mykernel.bin
+
+clean:
+	rm *.o
+	rm *.bin
