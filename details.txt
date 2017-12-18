@@ -58,3 +58,11 @@ The binaries of these two files - loader.o and kernel.o - are going to be glued 
 the linker as per the instructions in linker.ld file. Therefore these two files might have
 a bit of references back and forth. For example in loader.s we are importing the kernel_main
 function by using ".extern kernel_main" 
+
+MAGIC number and GRUB:
+=====================
+Grub has a kernel loading standard called multiboot. And according to this
+standard, for a binary to qualify as a kernel it must include a magic number
+which is '0x1badb002', along with it some FLAGS and a CHECKSUM must also be
+included. So What we have done is we have defined MAGIC, FLAGS, and CHECKSUM
+and then put them inside a section that we have called 'multiboot'
