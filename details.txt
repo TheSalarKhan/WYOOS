@@ -66,3 +66,18 @@ standard, for a binary to qualify as a kernel it must include a magic number
 which is '0x1badb002', along with it some FLAGS and a CHECKSUM must also be
 included. So What we have done is we have defined MAGIC, FLAGS, and CHECKSUM
 and then put them inside a section that we have called 'multiboot'
+
+THE multiboot struct:
+====================
+Before loading the kernel, and passing the control over to it. The grub
+bootloader gather information about the system like its RAM size etc, and
+puts it inside a multiboot struct in RAM. when passing control to the kernel
+grub puts the address of this struct into the ax register, and puts the magic number
+in the bx register - don't ask me.. I don't know why it puts the magic number there.. :\
+
+
+SYNOPSIS:
+========
+If you now try to run 'make loader.o' it will succeed
+but if you try running 'make kernel.o' it will give you an
+error saying 'printf' was not found.

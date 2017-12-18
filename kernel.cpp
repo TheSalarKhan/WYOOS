@@ -1,5 +1,5 @@
 
-extern "C" void kernel_main()
+extern "C" void kernel_main(const void* multiboot_struct, unsigned int magic_number)
 {
 	printf("Hello World");
 	
