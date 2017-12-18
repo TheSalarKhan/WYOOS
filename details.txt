@@ -32,3 +32,29 @@ mykernel.bin: linker.ld $(objects)
 # which we'll later make grub access.
 install: mykernel.bin
 	sudo cp $< /boot/mykernel.bin
+
+
+
+
+When designing this Operating System. We are not going to
+write the bootloader. Instead we are going to design it so that it can
+be loaded by a bootloader. In our case the bootloader that we have chosen
+is called grub.
+
+The bootloader will be loading the mykernel.bin file. This file is a merger
+of two files loader.o and kernel.o, which are - you guessed it - by products of
+loader.s and kernel.cpp.
+
+The loader.s file contains the very first lines of code that will be executed
+after the bootloader passes control to the kernel. The responsibility of loader.s
+file is to setup the kernel stack and other things before loading the kernel.
+One thing to note here is that in i386 architecture, the stack grows from higher
+to lower addresses.
+
+The kernel.cpp file is - what we'd like to think of as - the main entry for the kernel. The
+function 'kernel_main' is called in loader.s
+
+The binaries of these two files - loader.o and kernel.o - are going to be glued together by
+the linker as per the instructions in linker.ld file. Therefore these two files might have
+a bit of references back and forth. For example in loader.s we are importing the kernel_main
+function by using ".extern kernel_main" 
