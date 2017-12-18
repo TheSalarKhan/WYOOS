@@ -1,0 +1,34 @@
+# Flags used for g++, as, and ld
+# respectively.
+GPPPARAMS = -m32
+ASPARAMS = --32
+LDPARAMS = -melf_i386
+
+objects = loader.o kernel.o
+
+# This target explains how to
+# create a .o file from a .cpp
+# file. So running 'make foo.cpp'
+# will run this command.
+%.o: %.cpp
+	g++ $(GPPPARAMS) -o $@ -c $<
+
+# This file explains how to
+# create a .o file from a .s
+# file. So running 'make foo.s'
+# will run this command.
+%.o: %.s
+	as $(ASPARAMS) -o $@ $<
+
+# This target explains how to build mykernel.bin
+# It says that linker.ld and the $(objects) are
+# required for this command to run. So the make
+# will first execute stuff to create those two files.
+mykernel.bin: linker.ld $(objects)
+	ld $(LDPARAMS) -T $< -o $@ $(objects)
+
+# This target when run 'make install' will
+# place the kernel executable to a folder
+# which we'll later make grub access.
+install: mykernel.bin
+	sudo cp $< /boot/mykernel.bin
