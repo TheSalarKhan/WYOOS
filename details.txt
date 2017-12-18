@@ -105,3 +105,14 @@ It works in the following way:
 	the screen.
 	4) So, by simply writing to this memory you can change the contents of the screen.
 
+COMPILER FLAGS:
+==============
+The executable that will be generated at the end must be self-sufficient. And in order to make it that
+way we must pass some flags to the compiler to disable pulling in stuff from the eco-system on which the
+kernel is being compiled. Following flags have been passed to the G++ compiler:
+-fno-use-cxa-atexit: This has something todo with memory management.
+-nostdlib: no libc support.
+-fno-builtin: Don't recognize built-in functions read more at: https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html#C-Dialect-Options
+-fno-rtti: No run-time type identification.
+-fno-exceptions: No exception mechanisims
+-fno-leading-underscore: Don't append leading underscores to symbols in the generated object code.
