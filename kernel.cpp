@@ -9,6 +9,19 @@ void printf(const char* str) {
 	}
 }
 
+typedef void (*constructor) ();
+extern "C" constructor* start_ctors;
+extern "C" constructor* end_ctors;
+extern "C" void call_constructors()
+{
+	/**
+	  Start from the address in start_ctors, and move until
+	  that of just before end_ctors, and call all the constructors in between.
+	  */
+	for(constructor* i = start_ctors; i != end_ctors; i++) {
+		(*i)();
+	}
+}
 
 extern "C" void kernel_main(const void* multiboot_struct, unsigned int magic_number)
 {

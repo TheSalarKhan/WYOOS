@@ -9,11 +9,16 @@
 
 .section .text
 .extern kernel_main
+.extern call_constructors
 .global loader
 
 
 loader:
 	mov $kernel_stack, %esp
+	# Before calline kernel_main, call
+	# the function that calls all static
+	# constructors.
+	call call_constructors
 	push %eax
 	push %ebx
 	call kernel_main
