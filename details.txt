@@ -81,3 +81,27 @@ SYNOPSIS:
 If you now try to run 'make loader.o' it will succeed
 but if you try running 'make kernel.o' it will give you an
 error saying 'printf' was not found.
+
+
+PRINTF
+=====
+You mut have had a feeling that using printf is a crazy idea. Because that is a functionality
+is provided by libc, the standard 'C' library. Exactly and that comes along the other goodies
+that the OS provides to a program running in the user space.....
+
+WELL WE SHOULD WAKE UP!!! Because this is not the user space, we are inside the kernel, and that
+too we are at the very beginning of the kernel loading process. But there is a way of printing
+text to the screen in this mode.
+
+In protected mode, the special addresses 0xb0000 and 0xb8000 mark the start of video memory for monochrome
+and color monitors respectively. For our example we'll by using the video memory for the color monitors.
+It works in the following way:
+	1) The color video memory is an array of elements where each element is
+	of two bytes.
+	2) The first byte in each element defines the color of the character, such that
+	the first 4 bits represent the foreground color, and the last 4 bits represent the
+	background color. By default the background color is black, and the foreground is white.
+	3) The scond byte is the ASCII code for the character that you want to put out on
+	the screen.
+	4) So, by simply writing to this memory you can change the contents of the screen.
+
