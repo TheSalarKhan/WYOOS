@@ -124,3 +124,11 @@ The linker.ld file is used to tell the linker how to merge some object files tog
 we specify how different sections from different object files will come together to for a final binar file.
 We usually use this way of linking things whenever we are linking things that are compiled from different languages,
 in our case we are joining loader.o and kernel.o which have been written in assembly and C++ respectively.
+
+The extern "C" in kernel_main:
+=============================
+You must have wondered why is 'kernel_main' prefixed by 'extern "C"'. Well, that is very important todo, and it has
+something to do with how g++ renames the symbols when producing the '.o' files. In C++ functions can have overloads,
+so in order to use a symbol that is unique the C++ compiler mangles the function name by adding information about arguments.
+And since the C linkers, expect non-mangled names the object file produced by C++ compilers are unlinkable to C-like object
+files. So we use 'extern "C"' which is a linkage specification that tells the C++ compiler to not mangle the function name.
