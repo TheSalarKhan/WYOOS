@@ -155,3 +155,35 @@ static initialization.
 
 Now what we do is we define these symbols in our C++ code, and write code for calling all the constructors in the init_array list. We then export
 the function - that contains the code to call all constructors - to the loader.s file and call it before kernel_main... Bingo!!
+
+The mykernel.iso target:
+=======================
+	It will be nasty to test the kernel manually, by rebooting our machine everytime. To avoid this problem we will convert the kernel image
+and make an iso file out of it so that we can boot a VM like VirtualBox or QEMU from it. Doing that is simple. We create a folder 'iso' having the following 
+directory structure:
+	iso/
+	|
+	|-------boot/
+		|
+		|-------mykernel.bin
+		|
+		|-------grub/
+			|
+			|-------grub.cfg
+
+the 'grub.cfg' file will have the following content:
+	# no timeout for user input
+	set timeout=0
+	# default menu entry is 0, we only have one menu entry
+	set default=0
+
+	menuentry "MYOS" {
+	    multiboot /boot/mykernel.bin
+	    boot
+	}
+
+After this we'll have to run the following command to make the kernel iso, PROVIDED WE HAVE INSTALLED xorriso by running 'sudo apt-get install xorriso':
+	grub-mkrescue --output=mykernel.iso iso
+And we'll have our iso image ready!!!
+
+Thanks to Makefile, we will not have to do this again and again, we'll simply run 'make mykernel.iso' and all of this will happen automatically.
