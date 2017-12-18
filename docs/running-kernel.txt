@@ -1,0 +1,15 @@
+RUNNING KERNEL USING GRUB:
+=========================
+	The kernel that we have designed does not bootload itself, instead it uses grub's multiboot protocol and can be loaded by grub therefore.
+So, we will be using grub to load our kernel, the following steps might be enough to get the task done:
+1) First run the install target of the make file by running: 'make install'
+2) Then insert the following snippet in /boot/grub/grub.cfg:
+	### BEGIN MYKERNEL ###
+	menuentry 'My Operating System' {
+		multiboot /boot/mykernel.bin
+		boot
+	}
+	### END MYKERNEL ###
+As can be read this snippet creates a menu entry and tells grub that upon its selection the file /boot/mykernel.bin should be loaded using the
+multiboot method.
+3) Now, simply reboot and upon grub screen select the option 'My Operating System' and it should run your kernel.
