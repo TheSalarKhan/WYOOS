@@ -1,5 +1,6 @@
+#include "types.h"
 void printf(const char* str) {
-	unsigned short* VIDEO_MEMORY = (unsigned short*)0xb8000;
+	uint16_t* VIDEO_MEMORY = (uint16_t*)0xb8000;
 	/**
 	  Make sure that the string 'str' is null terminated
 	  or this loop will continue past the string.
@@ -23,7 +24,7 @@ extern "C" void call_constructors()
 	}
 }
 
-extern "C" void kernel_main(const void* multiboot_struct, unsigned int magic_number)
+extern "C" void kernel_main(const void* multiboot_struct, uint32_t magic_number)
 {
 	printf("Hello World");
 	
