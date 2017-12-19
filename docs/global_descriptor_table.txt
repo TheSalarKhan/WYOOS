@@ -1,0 +1,66 @@
+THE GLOBAL DESCRIPTOR TABLE:
+===========================
+
+	For memory management and protection reasons, an OS needs to keep track of the segments of memory. The information that the OS needs to save about
+memory segments is usually:
+	i)  The start and end of a memory segment, usually stored as start_address and length.
+	ii) Access rights, weather that memory segment is executable, or is readonly and all that
+	    stuff.
+All this information is stored in what is called the 'Global Descriptor Table'. So, it is obvious that as the very first steps in an OS kernel's life
+is to setup the global descrptor table.
+
+	The 'Global Descriptor Table' is specific to intel iA32 architectures. It contains entries telling the CPU about memory segments.
+To read more about it visit: http://wiki.osdev.org/Global_Descriptor_Table.
+
+	Each row of this table is called a 'Segment Descriptor' because it defines a segment of memory. Each Segment Descriptor is 64 bits and has the following format:
+	Bits 00-15 | 2 bytes | Limit 00:15
+	Bits 16-31 | 2 bytes | Base  00:15
+	Bits 32-39 | 1 byte  | Base  16:23
+	Bits 40-47 | 1 byte  | Access Byte
+	Bits 48-51 | 4 bits  | Limit 16:19
+	Bits 52-55 | 4 bits  | Flags
+	Bits 56-63 | 1 byte  | Base  24:31
+As can be seen, these 64 bits give various information about the segment, namely:
+	* 32 bit address for Base of the segment. This is the starting address.
+	* 20 bits for Limit of segment. This is the length - in bytes or in 4Kib blocks depending upon Gr bit - of the segment. Which implies that a
+	  segment can only be as long as 2^20 units.
+	* A Flag, which is a set of bits so defined:
+		Bit 0: Not used
+		Bit 1: Not used
+		Bit 2: Represents 'Sz' Size bit. If 0 it represents a 16-bit protected mode, if 1 it represents
+		32-bit protected mode.
+		Bit 3: Represents 'Gr' Granularity bit. If 0 it defines the 'Limit' as a multiplier of 1 byte. if 1
+		the limit is defined as a multiplier of 4Kib blocks.
+	* Access Byte, which is a byte so defined:
+		Bit 0: Ac Bit, or access bit, this is just set to 0, the CPU sets it to 1 when the segment is accessed.
+		Bit 1: RW bit, this bit is interpreted differently based on the value of the 'Ex' bit:
+			i) If the 'Ex' bit is 1 - i.e. its a code segment:
+				In this case the RW bit tells weather this segment is readable or not. Code segments are never writable
+			ii) If the 'Ex' bit is 0 - i.e. its a data segment:
+				In this case the RW bit tells weather write access for this segment is allowed. Data segments are always readable.
+		Bit 2: Direction/Conforming bit 'DC', like RW bit this also has two interpretations based on the type of segment.
+			i) If 'Ex' bit is 1 - i.e. its a code segment:
+				In this case this bit becomes the conforming bit. It now has to following interpretation:
+					* If the conforming bit is 1, it means that the code in this segment can be executed from an equal or a
+					lower priviledge level. So if the code in this segment is ring level 2, then it can be jumped to from a segment
+					with level 1, or level 2 but not level3.
+					In other words higher priviledge level code can reference this segment but not code that has a lower priviledge level.
+					* If the conforming bit is 0, the code can only be executed from the ring set in 'privl' field.
+		Bit 3: 'Ex' The 'Executable' bit. This bit marks the segment executable if set. So, if this bit is 1, it means that the segment is a code
+		segment. And if this bit is 0, it means that the segment is a data segment.
+		Bit 4: This is probably a reserved bit.
+		Bit 5 & 6: Together these bits make up the 'Privl' field. This field tells the ring level. 0 = highest (kernel), 1 = lowest (user).
+		Bit 7: 'Pr' Present bit. This must be 1 for all valid selectors.
+
+		EXAMPLE:
+		=======
+		For an example lets look at the Access byte that we pass when creating code section. '0x9A' this in binary is '0b10011010', which if we
+		read from right to left we'll parse it as:
+		Bit 0:	0
+		Bit 1:	1 -> This is a redable segment, all those with access can read the code in here.
+		Bit 2:	0 -> 'Conforming bit' 0 means only equal ring levels are allowed execution.
+		Bit 3:	1 -> 'Ex' on this is code segment.
+		Bit 4:	1 -> X Don't care!
+		Bit 5:	0 -\
+		Bit 6:	0 -----> Bit 5 and 6 0 means the 'Privl' level is 0, which means highest priority code lives here.
+		Bit 7:	1 -> This is a valid segment.

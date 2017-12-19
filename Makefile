@@ -2,7 +2,7 @@ GPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-excep
 ASPARAMS = --32
 LDPARAMS = -melf_i386
 
-objects = loader.o kernel.o
+objects = loader.o global_descriptor_table.o kernel.o
 
 %.o: %.cpp
 	g++ $(GPPPARAMS) -o $@ -c $<
@@ -12,14 +12,10 @@ objects = loader.o kernel.o
 
 mykernel.bin: linker.ld $(objects)
 	ld $(LDPARAMS) -T $< -o $@ $(objects)
+	rm $(objects)
 
 install: mykernel.bin
 	sudo cp $< /boot/mykernel.bin
-
-clean:
-	rm *.o
-	rm *.bin
-	rm *.iso
 
 mykernel.iso: mykernel.bin
 	mkdir -p iso/boot/grub
@@ -34,5 +30,5 @@ mykernel.iso: mykernel.bin
 	echo '    boot' >> iso/boot/grub/grub.cfg
 	echo '}' >> iso/boot/grub/grub.cfg
 	grub-mkrescue --output=$@ iso
-	rm -rf mykernel.bin
+	rm mykernel.bin
 	rm -rf iso

@@ -187,3 +187,10 @@ After this we'll have to run the following command to make the kernel iso, PROVI
 And we'll have our iso image ready!!!
 
 Thanks to Makefile, we will not have to do this again and again, we'll simply run 'make mykernel.iso' and all of this will happen automatically.
+
+
+STRUCT_PADDING:
+==============
+	When we declare a struct or a class in C/C++ the gcc compiler will add padding between its elements to align the data inside for fast retrieval.
+But when we are working with structs that are sensitive to such changes - that need to be defined perfectly down to each byte - we disable struct
+padding by using __attribute__((packed)) syntax that is provided by gcc.
