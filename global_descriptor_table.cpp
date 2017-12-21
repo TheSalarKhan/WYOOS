@@ -16,7 +16,6 @@ GlobalDescriptorTable::GlobalDescriptorTable() :
 		Bytes 0-1: Size of the GDT subtracted by 1.
 		Bytes 2-5: 4 byte linear base address of GDT.
 	  */
-	// Allocate two 4 byte integers
 	GdtDescriptionStructure structure;
 	structure.sizeof_gdt = sizeof(GlobalDescriptorTable) - 1;
 	structure.addressof_gdt = (uint32_t) this;
@@ -38,7 +37,7 @@ uint16_t GlobalDescriptorTable::GetCodeSegmentOffset(){
 }
 
 /**
-	All of the mumbo jumbo inside the function is to shove the arguments into the
+	TODO: All of the mumbo jumbo inside the function is to shove the arguments into the
 	different places where they need to go. Like all bad code, this needs to be
 	refactored.
   */
