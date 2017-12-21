@@ -1,0 +1,19 @@
+HARDWARE COMMUNICATION: (Ports)
+======================
+	In order to talk to computer hardware, we need to read and write data from and to the computer hardware. In order to do this we use the
+following assembly instructions
+	in(x)
+	out(x)
+
+	where (x) can be 'b' 'w' or 'l', standing for byte, word and long respectively.
+
+Some links with Great information:
+https://stackoverflow.com/questions/3215878/what-are-in-out-instructions-in-x86-used-for
+
+
+
+
+
+
+Links relevant to this commit:
+https://stackoverflow.com/questions/27353096/1b-and-1f-in-gnu-assembly
