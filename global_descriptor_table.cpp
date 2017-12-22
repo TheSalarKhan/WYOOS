@@ -16,11 +16,16 @@ GlobalDescriptorTable::GlobalDescriptorTable() :
 		Bytes 0-1: Size of the GDT subtracted by 1.
 		Bytes 2-5: 4 byte linear base address of GDT.
 	  */
-	GdtDescriptionStructure structure;
-	structure.sizeof_gdt = sizeof(GlobalDescriptorTable) - 1;
-	structure.addressof_gdt = (uint32_t) this;
-
-	asm volatile ("lgdt (%0)": :"p" ((uint8_t*) &structure));
+	/*
+		We declare the descriptor structure as a static
+		volatile struct. And then pass it to asm, using the
+		'm' constrant. the 'p' constraint was not working and was
+		giving a linker error.
+	*/
+	volatile static GdtDescriptionStructure gdt_locator;
+	gdt_locator.sizeof_gdt = sizeof(GlobalDescriptorTable) - 1;
+	gdt_locator.addressof_gdt = (uint32_t) this;
+	asm volatile ("lgdt (%0)": :"m" (gdt_locator));
 }
 
 GlobalDescriptorTable::~GlobalDescriptorTable() {

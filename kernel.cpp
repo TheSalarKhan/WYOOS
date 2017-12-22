@@ -1,16 +1,7 @@
 #include "types.h"
 #include "global_descriptor_table.h"
+#include "printf.h"
 
-void printf(const char* str) {
-	uint16_t* VIDEO_MEMORY = (uint16_t*)0xb8000;
-	/**
-	  Make sure that the string 'str' is null terminated
-	  or this loop will continue past the string.
-	 */
-	for(int i=0; str[i] != '\0'; i++) {
-		VIDEO_MEMORY[i] = (VIDEO_MEMORY[i]&0xFF00) | str[i];
-	}
-}
 
 typedef void (*constructor) ();
 extern "C" constructor* start_ctors;
@@ -28,10 +19,11 @@ extern "C" void call_constructors()
 
 extern "C" void kernel_main(const void* multiboot_struct, uint32_t magic_number)
 {
-	printf("Hello World");
 
 	// Instantiate the global descriptor table.
 	GlobalDescriptorTable table;
+
+	printf("Hello World!");
 	
 	// At the end of everything, we enter an
 	// infinite loop Because:

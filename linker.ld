@@ -4,33 +4,35 @@ OUTPUT_ARCH(i386:i386)
 
 SECTIONS
 {
-	. = 0x0100000;
+    . = 0x00100000;
+    .text ALIGN(0x1000) :
+    {
+        code = .; _code = .; __code = .;
+        *(.multiboot)
+        *(.text)
+    }
 
-	.text :
-	{
-		*(.multiboot)
-		*(.text*)
-		*(.rodata)
-	}
+    .data :
+    {
+        data = .; _data = .; __data = .;
+	start_ctors = .;
+	KEEP(*( .init_array ));
+	KEEP(*(SORT_BY_INIT_PRIORITY( .init_array.* )));
+	end_ctors = .;
+        *(.data)
+        *(.rodata)
+    }
 
-	.data :
-	{
-		start_ctors = .;
-		KEEP(*( .init_array ));
-		KEEP(*(SORT_BY_INIT_PRIORITY( .init_array.* )));
-		end_ctors = .;
+    .bss :
+    {
+        bss = .; _bss = .; __bss = .;
+        *(.bss)
+    }
 
-		*(.data)
-	}
-
-	.bss :
-	{
-		*(.bss)
-	}
-
-	/DISCARD/ :
-	{
-		*(.fini_array*)
-		*(.comment)
-	}
+    /DISCARD/ :
+    {
+        *(.fini_array*)
+	*(.comment)
+    }
+    end = .; _end = .; __end = .;
 }
