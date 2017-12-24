@@ -1,6 +1,7 @@
 #include "types.h"
 #include "global_descriptor_table.h"
 #include "printf.h"
+#include "interrupts.h"
 
 
 typedef void (*constructor) ();
@@ -21,10 +22,15 @@ extern "C" void kernel_main(const void* multiboot_struct, uint32_t magic_number)
 {
 
 	// Instantiate the global descriptor table.
-	GlobalDescriptorTable table;
+	GlobalDescriptorTable gdt;
+	InterruptManager interrupts(&gdt);
+
+
+
+	interrupts.Activate();
 
 	printf("Hello World!");
-	
+
 	// At the end of everything, we enter an
 	// infinite loop Because:
 	// 1) Control should not be here in the first place -_-
