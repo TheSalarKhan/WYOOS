@@ -23,13 +23,9 @@ extern "C" void kernel_main(const void* multiboot_struct, uint32_t magic_number)
 
 	// Instantiate the global descriptor table.
 	GlobalDescriptorTable gdt;
+
 	InterruptManager interrupts(&gdt);
-
-
-
 	interrupts.Activate();
-
-	printf("Hello World!");
 
 	// At the end of everything, we enter an
 	// infinite loop Because:

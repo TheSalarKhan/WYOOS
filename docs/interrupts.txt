@@ -1,0 +1,21 @@
+INTERRUPTS:
+==========
+
+	First we need to get an idea of what an interrupt is. For this please watch this video on youtube, its amazing and it will do a much better job at explaining: https://www.youtube.com/watch?v=4IgDeeLluGw. Secondly, there are two ways of getting interrupts, the way that we have followed in our approach is the legacy way known as the PIC way - Programmable Interrupt Controller. The Other way of doing things is using the APIC - Advanced Programmable Interrupt Controller, this way is much much more involved than the PIC way.
+	Read the following blog: http://www.randomhacks.net/2015/11/16/bare-metal-rust-configure-your-pic-interrupts/. This is also saved as an html file in the docs folder: 'ConfigurePICToHandleInterrupts.html'.
+
+  	There are three files involved in this process: interrupts.h, interrupts.c and interruptstub.s. the interruptstub.s file has theglue code. In other words this is the code that is registered with the computer, and this code then calls the C++ code. The assembly code is being registered in interrupts.cpp in the following two lines:
+```
+	SetInterruptDescriptorTableEntry(0x20, code_segment, &HandleInterruptRequest0x00, 0, IDT_INTERRUPT_GATE);
+	SetInterruptDescriptorTableEntry(0x21, code_segment, &HandleInterruptRequest0x01, 0, IDT_INTERRUPT_GATE);
+```	
+	If you read the code you'll see that HandleInterruptRequest0x00 and HandleInterruptRequest0x01 is not defined, it is being defined in the interruptsstub.s file using a macro:
+```	
+.macro HandleInterruptRequestMacro num
+.global _ZN16InterruptManager26HandleInterruptRequest\num\()Ev
+_ZN16InterruptManager26HandleInterruptRequest\num\()Ev:
+	movb $\num + IRQ_BASE, (interrupt_number)
+	jmp int_bottom
+.endm
+```
+	What this macro does is it moves the interrupt request number to an area in memory interrupt_number and then jumps to 'int_bottom' label. Where all the registers are saved on the stack, the function in interrupts.cpp is called, and after a return from the function the 'iret' instruction is executed. And that kind of sums up what we are doing. Do watch the video and read the blog.

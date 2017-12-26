@@ -24,7 +24,9 @@ HandleInterruptRequestMacro 0x00
 HandleInterruptRequestMacro 0x01
 
 int_bottom:
-	# save the current state by pushing stuff to the stack
+	# save the current state by pushing stuff to the stack.
+	# By stuff we mean, all the user registers, and the segment
+	# registers.
 	pusha
 	pushl %ds
 	pushl %es
