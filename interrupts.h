@@ -7,6 +7,7 @@
 
 class InterruptManager {
 protected:
+	static InterruptManager* ActiveInterruptManager;
 	struct GateDescriptor {
 		uint16_t handler_address_lo;
 		uint16_t gdt_code_segment_selector;
@@ -38,7 +39,9 @@ public:
 	InterruptManager(GlobalDescriptorTable* gdt);
 	~InterruptManager();
 	void Activate();
+	void Deactivate();
 	static uint32_t HandleInterrupt(uint8_t interrupt_number, uint32_t esp);
+	uint32_t HandleInterruptNonStatic(uint8_t interrupt_number, uint32_t esp);
 
 	static void IgnoreInterrupt();
 	static void HandleInterruptRequest0x00();

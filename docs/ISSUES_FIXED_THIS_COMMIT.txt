@@ -1,0 +1,21 @@
+Multiple issues have been fixed this commit:
+
+1. The first problem that we had was that the constructors for static objects were not being called appropriately, and so we made the changes
+to the section in between start_ctors and end_ctors in linker.ld
+
+2. The second problem which was a major typo one was that instead of doing 'popl's and 'popa'i - to restore the program execution state, after
+serving the interrupt - we were using 'pushl' and 'pusha'... Another lesson that teaches against copying and pasting code.
+
+3. Next we have these changes in the printf.cpp:
++#define VIDEO_MEMORY_BASE_ADDRESS (void*)0xb8000
++// Defining a pointer to the memory, so that it can be
++// addressed as a 2d array with dimensions 80 columns and 'n' rows.
++ColorVideoMemoryWord (* const screen)[80] = static_cast<ColorVideoMemoryWord (*)[80]> (VIDEO_MEMORY_BASE_ADDRESS);
+	Here we have simply moved the declaration of the screen pointer from inside the function to a global scope, so that it can be use by clear_screen(), so that clear_screen() can be called just like printf() from any other function that want's to use it. There are three things regarging this piece of change:
+	* Firstly, What's surprising is that this seemingly innocent change was crashing the kernel before I realized point (1) regarding static constructors.
+	* Secondly, we have used static_cast<> which lets us cast a void* to any other type, it's just C++ish. 
+	* Thirdly we see the unusual use of 'const' here, normally it should have been placed right befor or after 'ColorVideoMemoryWord', but placing it just between the '*' and variable name means that we are creating a constant pointer to a piece of memory that can be mutated. Which means that the value inside the pointer cannot be mutated but the memory toward which the pointer is pointing can be mutated. So:
+		screen = 0x234; // This is Illegal
+		screen[0][0].ascii_char = 'A'; // This is legal. This would have been illegal if const was used in its most usual form.
+
+4. Lastly, we have declared a static ActiveInterruptManager. We use this pointer to keep track of the current interrupt manager, the reason behind is that while serving the interrupt we need to respond to the PICs, but we can only do that using pic_master_command, and pic_slave_command ports, which are only available inside an object, and cannot be called from the static function HandleInterrupt(). So now, HandleInterrupt() calls the non-static function 'HandleInterruptNonStatic()' on the current 'ActiveInterruptHandler' and all the action happens there.

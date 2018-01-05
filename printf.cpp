@@ -1,4 +1,8 @@
 #include "printf.h"
+#define VIDEO_MEMORY_BASE_ADDRESS (void*)0xb8000
+// Defining a pointer to the memory, so that it can be
+// addressed as a 2d array with dimensions 80 columns and 'n' rows.
+ColorVideoMemoryWord (* const screen)[80] = static_cast<ColorVideoMemoryWord (*)[80]> (VIDEO_MEMORY_BASE_ADDRESS);
 
 void clear_screen(ColorVideoMemoryWord (*screen)[80]) {
 	// Write the whole video memory clean
@@ -20,12 +24,6 @@ void printf(const char* str) {
 
 	// These two variables will track the cursor position.
 	static uint8_t cursor_row = 0, cursor_col = 0;
-
-	// Defining a pointer to the memory, so that it can be
-	// addressed as a 2d array.
-	uint8_t* VIDEO_MEMORY_BASE_ADDRESS = (uint8_t*) 0xb8000;
-	ColorVideoMemoryWord (*screen)[80];
-	screen = (ColorVideoMemoryWord (*)[80]) (VIDEO_MEMORY_BASE_ADDRESS); // Needs explicit type cast.
 
 	// BEWARE: The string 'str' must be null terminated.
 	// Printing loop

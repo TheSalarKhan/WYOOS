@@ -16,8 +16,8 @@ SECTIONS
     {
         data = .; _data = .; __data = .;
 	start_ctors = .;
-	KEEP(*( .init_array ));
-	KEEP(*(SORT_BY_INIT_PRIORITY( .init_array.* )));
+	*(.ctors.*)
+	*(.ctors)
 	end_ctors = .;
         *(.data)
         *(.rodata)

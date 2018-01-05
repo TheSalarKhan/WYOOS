@@ -43,11 +43,11 @@ int_bottom:
 
 	# restore the state by reloading the registers in the
 	# reverse order.
-	pushl %gs
-	pushl %fs
-	pushl %es
-	pushl %ds
-	pusha
+	popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	popa
 
 	# return from the interrupt handler
 	iret
