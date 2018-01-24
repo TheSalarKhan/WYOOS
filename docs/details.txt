@@ -194,3 +194,13 @@ STRUCT_PADDING:
 	When we declare a struct or a class in C/C++ the gcc compiler will add padding between its elements to align the data inside for fast retrieval.
 But when we are working with structs that are sensitive to such changes - that need to be defined perfectly down to each byte - we disable struct
 padding by using __attribute__((packed)) syntax that is provided by gcc.
+
+
+
+
+
+INTERRUPT HANDLER:
+=================
+	We have written an interrupt handler class to handle a specific interrupt. Instead of writing bear functions
+and calling them against the appropriate interrupt number, we will mainain an array of objects, where each object
+will have knowledge of its interrupt number, and the interrupt manager that it is registered at.

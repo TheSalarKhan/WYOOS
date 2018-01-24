@@ -4,10 +4,30 @@
 #include "types.h"
 #include "port.h"
 #include "global_descriptor_table.h"
+// forward declaring InterruptManager
+class InterruptManager;
+
+class InterruptHandler {
+protected:
+	// The interrupt number for this interrupt handler.
+	uint8_t interrupt_number_;
+	// The interrupt manager that this interrupt
+	// handler is connected to.
+	InterruptManager* interrupt_manager_;
+
+	// We have made the *tructors protected so that noone
+	// can instantiate the objects for this class.
+	InterruptHandler(uint8_t interrupt_number, InterruptManager* interrupt_manager);
+	~InterruptHandler();
+public:
+	uint32_t HandleInterrupt(uint32_t esp);
+};
 
 class InterruptManager {
+friend class InterruptHandler;
 protected:
 	static InterruptManager* ActiveInterruptManager;
+	InterruptHandler* handlers[256];
 	struct GateDescriptor {
 		uint16_t handler_address_lo;
 		uint16_t gdt_code_segment_selector;
