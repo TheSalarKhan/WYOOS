@@ -113,7 +113,7 @@ uint32_t InterruptManager::HandleInterrupt(uint8_t interrupt_number, uint32_t es
 
 void PrintUnhandledInterrupt(uint8_t interrupt_number) {
 	const char* hex_digits = "0123456789ABCDEF";
-	char* message = "Unhandled interrupt: 0x00\n\n\n";
+	char message[] = "Unhandled interrupt: 0x00\n";
 	message[23] = hex_digits[(interrupt_number >> 4) & 0x0F];
 	message[24] = hex_digits[interrupt_number & 0x0F];
 	printf(message);
