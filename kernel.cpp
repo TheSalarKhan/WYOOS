@@ -2,7 +2,7 @@
 #include "global_descriptor_table.h"
 #include "printf.h"
 #include "interrupts.h"
-//#include "keyboard.h"
+#include "keyboard.h"
 
 
 typedef void (*constructor) ();
@@ -27,7 +27,7 @@ extern "C" void kernel_main(const void* multiboot_struct, uint32_t magic_number)
 
 	InterruptManager interrupt_manager(&gdt);
 
-	//KeyboardDriver kbd(&interrupt_manager);
+	KeyboardDriver kbd(&interrupt_manager);
 
 	interrupt_manager.Activate();
 
@@ -36,5 +36,5 @@ extern "C" void kernel_main(const void* multiboot_struct, uint32_t magic_number)
 	// 1) Control should not be here in the first place -_-
 	// 2) But now that we are here. We cannot simply do nothing,
 	// that's just not how computers work.
-	while(1);
+	while(true);
 }
