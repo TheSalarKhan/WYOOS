@@ -34,8 +34,9 @@ SECTIONS
 
     /DISCARD/ :
     {
+        *(.eh_frame)
         *(.fini_array*)
-	*(.comment)
+	    *(.comment)
     }
     end = .; _end = .; __end = .;
 }
