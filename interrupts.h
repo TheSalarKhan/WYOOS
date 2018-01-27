@@ -20,7 +20,7 @@ protected:
 	InterruptHandler(uint8_t interrupt_number, InterruptManager* interrupt_manager);
 	~InterruptHandler();
 public:
-	uint32_t HandleInterrupt(uint32_t esp);
+	virtual uint32_t HandleInterrupt(uint32_t esp);
 };
 
 class InterruptManager {

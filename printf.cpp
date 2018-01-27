@@ -13,7 +13,7 @@ void clear_screen(ColorVideoMemoryWord (*screen)[80]) {
 	}
 }
 
-void printf(const char* str) {
+void printf(const char* str, bool print_newline) {
 	/**
 	  This function handles writing strings to colored video memory in protected mode.
 	  Video memory is a 2d array of 80*25 words - two bytes - starting at address
@@ -27,10 +27,16 @@ void printf(const char* str) {
 
 	// BEWARE: The string 'str' must be null terminated.
 	// Printing loop
-	for(register int i=0; str[i] != '\0'; i++) {
-		// Perform a line break if '\n' else
-		// print character.
+	for(register int i=0; true ; i++) {
 		switch(str[i]) {
+			case '\0':
+				// If print_newline is true, then change line
+				// at the end of this string.
+				if(print_newline) {
+					cursor_row++;
+					cursor_col = 0;
+				}
+				break;
 			case '\n':
 				cursor_row++;
 				cursor_col = 0;
@@ -54,5 +60,8 @@ void printf(const char* str) {
 			clear_screen(screen);
 			cursor_row = cursor_col = 0;
 		}
+
+		// If this was the last character, we break from for.
+		if (str[i] == '\0') break;
 	}
 }
