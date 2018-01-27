@@ -11,7 +11,8 @@ struct ColorVideoMemoryWord {
 	uint8_t background_color : 4;
 } __attribute__((packed));
 
-
-void printf(const char* str);
+// Our printf will print a newline at the end of every string,
+// unless print_newline is specified as false. 
+void printf(const char* str,bool print_newline = true);
 
 #endif
